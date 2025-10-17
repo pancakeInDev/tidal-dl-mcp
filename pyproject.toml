@@ -23,9 +23,10 @@ tidal-dl-ng = "tidal_dl_ng.cli:app"
 tidal-dl-ng-gui = "tidal_dl_ng.gui:gui_activate"
 tdn = "tidal_dl_ng.cli:app"
 tdng = "tidal_dl_ng.gui:gui_activate"
+tidal-dl-ng-mcp = "tidal_dl_ng_mcp.server:main"
 
 [tool.poetry]
-packages = [{ include = "tidal_dl_ng" }]
+packages = [{ include = "tidal_dl_ng" }, { include = "tidal_dl_ng_mcp" }]
 
 [tool.poetry.dependencies]
 requests = "~2.32.5"
@@ -42,6 +43,7 @@ typer = "^0.19.2"
 tidalapi = "^0.8.8"
 python-ffmpeg = "^2.0.12"
 pycryptodome = "^3.23.0"
+mcp = "^1.1.2"
 
 [project.optional-dependencies]
 gui = ["pyside6", "pyqtdarktheme-fork"]
