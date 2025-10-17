@@ -11,6 +11,7 @@
 - `MCP_FEATURES.md` - Add tool to "Implemented" section, update statistics
 - `README_MCP.md` - Add tool documentation in "Available Tools" section
 - `QUICKSTART_MCP.md` - Add to tools list if it's a core feature
+- `TEST_SCENARIOS.md` - Add test scenarios for the new tool
 
 **Required updates:**
 ```markdown
@@ -30,6 +31,14 @@ README_MCP.md:
 
 QUICKSTART_MCP.md:
 - Add to "Available Tools" list if it's user-facing
+
+TEST_SCENARIOS.md:
+- Add test scenario for the new tool in appropriate category
+- Update "Total Tools" count in header
+- Add to Quick Test if it's a core feature
+- Add to Full Integration Test if it fits the workflow
+- Update test coverage matrix
+- Update "Last Updated" date
 ```
 
 #### 2. Removing MCP Tools
@@ -37,6 +46,7 @@ QUICKSTART_MCP.md:
 - `MCP_FEATURES.md` - Remove from "Implemented", move to "Not Yet Implemented" if planned
 - `README_MCP.md` - Remove from "Available Tools"
 - `QUICKSTART_MCP.md` - Remove from tools list
+- `TEST_SCENARIOS.md` - Remove test scenarios, update counts and matrix
 
 #### 3. Adding MCP Resources
 **Files to update:**
@@ -124,6 +134,14 @@ Before completing any feature work, verify:
   - [ ] Quick example provided if relevant
   - [ ] Version number updated if needed
 
+- [ ] `TEST_SCENARIOS.md` updated
+  - [ ] Test scenario added for new tool in appropriate category
+  - [ ] "Total Tools" count updated in header
+  - [ ] Test coverage matrix updated
+  - [ ] Quick Test updated if core feature
+  - [ ] Full Integration Test updated if applicable
+  - [ ] "Last Updated" date changed
+
 - [ ] `README.md` updated (if major feature)
   - [ ] Feature list updated
   - [ ] MCP section reflects new capabilities
@@ -186,6 +204,28 @@ download_track: track_id="67890", quality="HiRes", format="flac"
 ```markdown
 ### Downloads (1)  <-- ADD
 - `download_track` - Download tracks
+```
+
+**TEST_SCENARIOS.md:**
+```markdown
+## 💾 Category 4: Download Operations (4 tools)  <-- UPDATE count
+
+### Test 4.2: Download Track  <-- ADD NEW TEST
+\`\`\`
+Download a single track:
+1. Pick any track from the Billie Eilish search
+2. Download it in HiFi quality
+3. Show me the download progress and result
+4. Confirm the file path
+
+Note: This will actually download the file to ~/Music/TIDAL/
+\`\`\`
+
+# Update header:
+**Total Tools:** 13  <-- UPDATE from 12
+
+# Update coverage matrix:
+| Downloads | 4 | ✅ | ⚠️ Optional | ✅ | Complete |  <-- UPDATE
 ```
 
 ---
@@ -263,13 +303,17 @@ tidal-dl-mcp/
 ├── README_MCP.md             # Complete MCP setup & usage guide
 ├── MCP_FEATURES.md           # Feature coverage & roadmap
 ├── QUICKSTART_MCP.md         # 5-minute quick start
+├── TEST_SCENARIOS.md         # Comprehensive test scenarios for all tools
 ├── CLAUDE.md                 # Development guidelines
+├── .cursorrules              # Documentation update rules (this file)
 ├── tidal_dl_ng_mcp/          # MCP server code
 │   ├── server.py             # Main server (tool registration)
 │   ├── tools/
 │   │   ├── search.py         # Search tool
 │   │   ├── playlist.py       # Playlist tools
 │   │   ├── favorites.py      # Favorites tools
+│   │   ├── download.py       # Download tools
+│   │   ├── discovery.py      # Discovery & details tools
 │   │   └── [new_feature].py  # Add new tool files here
 │   └── utils/
 │       └── auth.py           # Authentication utilities
@@ -299,15 +343,23 @@ Write the code for the new tool/feature.
 - Add to tools list
 - Add quick example if core feature
 
-### Step 5: Update README.md (if major feature)
+### Step 5: Update TEST_SCENARIOS.md
+- Add test scenario in appropriate category
+- Update "Total Tools" count
+- Update test coverage matrix
+- Add to integration test if applicable
+- Update "Last Updated" date
+
+### Step 6: Update README.md (if major feature)
 - Update MCP Server section
 - Update feature highlights
 
-### Step 6: Verify
+### Step 7: Verify
 - Read through all updated documentation
 - Verify examples work
 - Check all links
 - Confirm counts and statistics are correct
+- Run test scenarios to verify tool works
 
 ---
 
@@ -317,11 +369,13 @@ Write the code for the new tool/feature.
 
 Every feature implementation is only complete when:
 1. Code is written and tested
-2. Documentation is updated
-3. Examples are provided
-4. Statistics are current
+2. Documentation is updated (MCP_FEATURES.md, README_MCP.md, QUICKSTART_MCP.md)
+3. Test scenarios are added (TEST_SCENARIOS.md)
+4. Examples are provided
+5. Statistics are current
+6. Tests pass
 
-**Documentation is not optional—it's required!**
+**Documentation and testing are not optional—they're required!**
 
 ---
 
