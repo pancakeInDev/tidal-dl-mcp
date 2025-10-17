@@ -73,10 +73,14 @@ Show me my playlists
 ## 🎵 What You Can Do
 
 - **Search:** "Find albums by Radiohead"
+- **Details:** "Show me details for this track"
+- **Discovery:** "Find similar artists to MF DOOM"
+- **Lyrics:** "Get the lyrics for this song"
 - **Playlists:** "Create a playlist called 'Workout Mix'"
 - **Add Tracks:** "Add this track to my playlist"
 - **Favorites:** "Show me my favorite albums"
-- **Organize:** "What playlists do I have?"
+- **Downloads:** "Download this track in HiRes quality"
+- **Explore:** "Show me artist radio for Daft Punk"
 
 ---
 
@@ -105,12 +109,21 @@ Show me my playlists
 
 ---
 
-## 🚀 Available Tools (12)
+## 🚀 Available Tools (30)
 
-### Search (1)
+### Search & Discovery (10)
 - `search_tidal` - Find music content
+- `get_track_details` - Track information
+- `get_album_details` - Album information
+- `get_artist_details` - Artist bio & top tracks
+- `get_artist_albums` - Browse discography
+- `get_similar_artists` - Find similar artists
+- `get_track_lyrics` - Get song lyrics
+- `get_playlist_details` - Playlist information
+- `browse_genres` - Explore genres
+- `get_artist_radio` - Artist radio mixes
 
-### Playlists (7)
+### Playlists (12)
 - `create_playlist` - Make new playlists
 - `edit_playlist` - Modify playlist info
 - `delete_playlist` - Remove playlists
@@ -118,12 +131,23 @@ Show me my playlists
 - `remove_from_playlist` - Remove tracks
 - `get_playlist_items` - View tracks
 - `get_my_playlists` - List playlists
+- `reorder_playlist` - Reorder tracks
+- `clear_playlist` - Remove all tracks
+- `merge_playlists` - Combine playlists
+- `create_playlist_folder` - Create folders
+- `move_playlist_to_folder` - Organize playlists
 
 ### Favorites (4)
 - `add_to_favorites` - Favorite items
 - `remove_from_favorites` - Unfavorite
 - `get_favorites` - View favorites
 - `get_favorites_summary` - Count overview
+
+### Downloads (4)
+- `download_track` - Download tracks with quality options
+- `download_album` - Download complete albums
+- `download_playlist` - Download playlists
+- `get_download_settings` - View download config
 
 ---
 

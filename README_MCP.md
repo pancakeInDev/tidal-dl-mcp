@@ -39,7 +39,7 @@ This transforms Claude Desktop (or any MCP client) into a powerful interface for
 
 ## ✨ Features
 
-### Current Capabilities (v0.1.0)
+### Current Capabilities (v0.2.0)
 
 #### 🔍 Search & Discovery
 - Universal search across all TIDAL content types
@@ -55,12 +55,34 @@ This transforms Claude Desktop (or any MCP client) into a powerful interface for
 - View playlist contents with full details
 - List all your playlists
 - Public/private visibility settings
+- Reorder tracks within playlists
+- Clear all tracks from playlists
+- Merge playlists together
+- Create folders for organization
+- Move playlists into folders
 
 #### ⭐ Favorites Management
 - Add any media to favorites (track, album, artist, playlist, video, mix)
 - Remove items from favorites
 - Browse favorites by type
 - Get favorites summary overview
+
+#### 💾 Download Operations
+- Download individual tracks with quality selection
+- Download complete albums with folder organization
+- Download playlists with optional video support
+- View download settings and quality information
+
+#### 🔍 Discovery & Details
+- Get detailed track information (metadata, quality, ISRC, lyrics availability)
+- Get complete album details (tracklist, release info, reviews)
+- Get artist information (biography, top tracks, discography)
+- Browse artist albums by type (albums, EPs/singles, compilations)
+- Find similar artists for music discovery
+- Get track lyrics (synced or static)
+- View detailed playlist information
+- Browse TIDAL genres
+- Get artist radio (curated mixes based on artist style)
 
 #### 📊 Resources
 - Authentication status checking
@@ -319,7 +341,7 @@ search_tidal: query="jazz", media_type="playlist"
 
 ---
 
-### Playlist Management (7 tools)
+### Playlist Management (12 tools)
 
 #### `create_playlist`
 Create a new TIDAL playlist.
@@ -415,6 +437,79 @@ Get a list of your playlists.
 get_my_playlists: limit=20
 ```
 
+#### `reorder_playlist`
+Move a track within a playlist to a new position.
+
+**Parameters:**
+- `playlist_id` (required): ID of the playlist
+- `from_index` (required): Current index of the track (0-based)
+- `to_position` (required): New position for the track (0-based)
+
+**Example:**
+```
+reorder_playlist: playlist_id="abc123", from_index=5, to_position=0
+reorder_playlist: playlist_id="abc123", from_index=0, to_position=10
+```
+
+#### `clear_playlist`
+Remove all tracks from a playlist at once.
+
+**Parameters:**
+- `playlist_id` (required): ID of the playlist to clear
+
+**Example:**
+```
+clear_playlist: playlist_id="abc123"
+```
+
+**Warning:** This removes ALL tracks from the playlist. This cannot be undone.
+
+#### `merge_playlists`
+Merge tracks from one playlist into another.
+
+**Parameters:**
+- `target_playlist_id` (required): ID of the playlist to merge into
+- `source_playlist_id` (required): ID of the playlist to merge from
+- `allow_duplicates` (optional): Allow duplicate tracks (default: false)
+
+**Example:**
+```
+merge_playlists: target_playlist_id="playlist1", source_playlist_id="playlist2"
+merge_playlists: target_playlist_id="main", source_playlist_id="temp", allow_duplicates=true
+```
+
+**Note:** This copies tracks from the source playlist to the target playlist. The source playlist is not modified.
+
+#### `create_playlist_folder`
+Create a new folder for organizing playlists.
+
+**Parameters:**
+- `title` (required): Folder name
+- `parent_folder_id` (optional): Parent folder ID (default: "root" for top level)
+
+**Example:**
+```
+create_playlist_folder: title="Workout Playlists"
+create_playlist_folder: title="Rock", parent_folder_id="root"
+create_playlist_folder: title="Classic Rock", parent_folder_id="abc123"
+```
+
+#### `move_playlist_to_folder`
+Move a playlist into a folder or to root level.
+
+**Parameters:**
+- `playlist_id` (required): ID of the playlist to move
+- `folder_id` (optional): Target folder ID (None or "root" to move to root level)
+
+**Examples:**
+```
+move_playlist_to_folder: playlist_id="playlist1", folder_id="folder123"
+move_playlist_to_folder: playlist_id="playlist2", folder_id="root"
+move_playlist_to_folder: playlist_id="playlist3"
+```
+
+**Note:** Omitting `folder_id` or using "root" moves the playlist to the top level (no folder).
+
 ---
 
 ### Favorites Management (4 tools)
@@ -467,6 +562,318 @@ Get a summary count of all your favorites by type.
 ```
 get_favorites_summary
 ```
+
+---
+
+### Download Operations (4 tools)
+
+#### `download_track`
+Download a track from TIDAL with specified quality.
+
+**Parameters:**
+- `track_id` (required): TIDAL track ID
+- `quality` (optional): Audio quality - `Low`, `HiFi`, `Lossless`, `HiRes`, `Master` (default: `HiFi`)
+- `output_path` (optional): Custom output directory (default: `~/Music/TIDAL`)
+
+**Quality Options:**
+- **Low**: 320 kbps AAC
+- **HiFi/Lossless**: FLAC 16-bit/44.1kHz (CD Quality)
+- **HiRes/Master**: FLAC up to 24-bit/192kHz (Studio Master)
+
+**File Organization:**
+Files are saved as: `{artist}/{album}/{album_track_num} - {title}.flac`
+
+**What's Included:**
+- Full metadata (artist, album, title, date, etc.)
+- Album artwork (embedded)
+- Lyrics (when available)
+- Replay gain information
+
+**Examples:**
+```
+download_track: track_id="12345"
+download_track: track_id="67890", quality="HiRes"
+download_track: track_id="11111", quality="HiFi", output_path="/Users/john/Downloads"
+```
+
+**Note:** Quality depends on your TIDAL subscription:
+- TIDAL HiFi: Up to HiFi quality (16-bit/44.1kHz)
+- TIDAL HiFi Plus: Up to HiRes quality (24-bit/192kHz)
+
+---
+
+#### `download_album`
+Download an entire album from TIDAL.
+
+**Parameters:**
+- `album_id` (required): TIDAL album ID
+- `quality` (optional): Audio quality (default: `HiFi`)
+- `output_path` (optional): Custom output directory
+
+**File Organization:**
+```
+{artist}/
+  {album}/
+    01 - Track One.flac
+    02 - Track Two.flac
+    ...
+    cover.jpg
+    playlist.m3u
+```
+
+**What's Included:**
+- All tracks with full metadata
+- Album artwork
+- Lyrics for all tracks (when available)
+- M3U playlist file
+- Proper track numbering
+
+**Examples:**
+```
+download_album: album_id="98765"
+download_album: album_id="54321", quality="HiRes"
+```
+
+---
+
+#### `download_playlist`
+Download a playlist from TIDAL.
+
+**Parameters:**
+- `playlist_id` (required): TIDAL playlist ID
+- `quality` (optional): Audio quality (default: `HiFi`)
+- `output_path` (optional): Custom output directory
+- `include_videos` (optional): Include videos in download (default: `false`)
+
+**File Organization:**
+```
+Playlists/
+  {playlist_name}/
+    01 - Artist - Track.flac
+    02 - Artist - Track.flac
+    ...
+    playlist.m3u
+```
+
+**What's Included:**
+- All tracks in playlist order
+- Full metadata for each track
+- M3U playlist file preserving order
+- Videos (if `include_videos=true`)
+
+**Examples:**
+```
+download_playlist: playlist_id="abc-123"
+download_playlist: playlist_id="def-456", quality="HiFi", include_videos=true
+```
+
+---
+
+#### `get_download_settings`
+View current download configuration and quality information.
+
+**No parameters required.**
+
+**Returns:**
+- Current quality setting
+- Default download path
+- Available quality options
+- Subscription tier limitations
+
+**Example:**
+```
+get_download_settings
+```
+
+---
+
+### Discovery & Details (9 tools)
+
+#### `get_track_details`
+Get detailed information about a track.
+
+**Parameters:**
+- `track_id` (required): TIDAL track ID
+
+**Returns:**
+- Track name, artist, album
+- Duration, track number, volume number
+- Audio quality, availability
+- ISRC code, copyright
+- Lyrics availability (synced/static/none)
+- TIDAL URL
+
+**Example:**
+```
+get_track_details: track_id="108043415"
+```
+
+---
+
+#### `get_album_details`
+Get detailed information about an album.
+
+**Parameters:**
+- `album_id` (required): TIDAL album ID
+
+**Returns:**
+- Album name, artist, release date
+- Complete tracklist with durations
+- Number of tracks and volumes
+- UPC code, copyright
+- Audio resolution
+- Editorial review (if available)
+- TIDAL URL
+
+**Example:**
+```
+get_album_details: album_id="108043414"
+```
+
+---
+
+#### `get_artist_details`
+Get detailed information about an artist.
+
+**Parameters:**
+- `artist_id` (required): TIDAL artist ID
+- `include_top_tracks` (optional): Include top tracks list (default: `true`)
+
+**Returns:**
+- Artist name and ID
+- Biography
+- Album and EP/single counts
+- Top tracks (up to 10)
+- TIDAL URL
+
+**Example:**
+```
+get_artist_details: artist_id="3503597"
+get_artist_details: artist_id="3503597", include_top_tracks=false
+```
+
+---
+
+#### `get_artist_albums`
+Get albums by an artist, filterable by type.
+
+**Parameters:**
+- `artist_id` (required): TIDAL artist ID
+- `album_type` (optional): Type filter - `all`, `albums`, `eps_singles`, `other` (default: `all`)
+- `limit` (optional): Maximum albums to return (default: 50)
+
+**Album Types:**
+- **all**: All releases (albums + EPs/singles)
+- **albums**: Studio albums only
+- **eps_singles**: EPs and singles
+- **other**: Compilations and other releases
+
+**Example:**
+```
+get_artist_albums: artist_id="3503597"
+get_artist_albums: artist_id="3503597", album_type="albums"
+get_artist_albums: artist_id="3503597", album_type="eps_singles", limit=20
+```
+
+---
+
+#### `get_similar_artists`
+Find artists similar to a given artist.
+
+**Parameters:**
+- `artist_id` (required): TIDAL artist ID
+- `limit` (optional): Maximum artists to return (default: 10)
+
+**Returns:**
+- List of similar artists with names and IDs
+- Useful for music discovery
+
+**Example:**
+```
+get_similar_artists: artist_id="3503597"
+get_similar_artists: artist_id="3503597", limit=20
+```
+
+---
+
+#### `get_track_lyrics`
+Get lyrics for a track.
+
+**Parameters:**
+- `track_id` (required): TIDAL track ID
+
+**Returns:**
+- **Synced lyrics**: Timestamped lyrics with `[MM:SS]` format
+- **Static lyrics**: Plain text lyrics without timestamps
+- Provider information
+
+**Example:**
+```
+get_track_lyrics: track_id="108043415"
+```
+
+**Note:** Not all tracks have lyrics available. Returns error message if no lyrics found.
+
+---
+
+#### `get_playlist_details`
+Get detailed information about a playlist.
+
+**Parameters:**
+- `playlist_id` (required): TIDAL playlist ID
+
+**Returns:**
+- Playlist name, creator, description
+- Track count and total duration
+- Creation and last updated dates
+- Public/private status
+- Preview of tracks (first 15)
+- TIDAL URL
+
+**Example:**
+```
+get_playlist_details: playlist_id="abc-123-def"
+```
+
+---
+
+#### `browse_genres`
+Browse available music genres on TIDAL.
+
+**Parameters:**
+- `limit` (optional): Maximum genres to return (default: 50)
+
+**Returns:**
+- List of TIDAL genres
+- Categorized listings
+
+**Example:**
+```
+browse_genres
+browse_genres: limit=20
+```
+
+---
+
+#### `get_artist_radio`
+Get artist radio - a curated mix of tracks inspired by an artist.
+
+**Parameters:**
+- `artist_id` (required): TIDAL artist ID
+- `limit` (optional): Maximum tracks to return (default: 50)
+
+**Returns:**
+- Curated tracklist inspired by the artist's style
+- Mix of tracks from the artist and similar artists
+- Useful for discovery
+
+**Example:**
+```
+get_artist_radio: artist_id="3503597"
+get_artist_radio: artist_id="3503597", limit=30
+```
+
+**Tip:** Artist radio is AI-curated and provides a great way to discover new music similar to your favorite artists!
 
 ---
 
@@ -727,4 +1134,4 @@ Open an issue on GitHub: https://github.com/exislow/tidal-dl-ng/issues
 
 ---
 
-*Last Updated: 2025-10-17 | Version: 0.1.0*
+*Last Updated: 2025-01-17 | Version: 0.2.0*

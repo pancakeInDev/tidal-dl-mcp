@@ -1,6 +1,6 @@
 """Playlist management tools for TIDAL MCP server."""
 
-from tidalapi.playlist import UserPlaylist
+from tidalapi.playlist import UserPlaylist, Folder
 
 from tidal_dl_ng_mcp.utils.auth import get_tidal_instance, require_auth
 
@@ -299,3 +299,199 @@ async def get_my_playlists(limit: int = 50, offset: int = 0) -> str:
 
     except Exception as e:
         return f"✗ Failed to get playlists: {e!s}"
+
+
+@require_auth
+async def reorder_playlist(playlist_id: str, from_index: int, to_position: int) -> str:
+    """Move a track within a playlist to a new position.
+
+    Args:
+        playlist_id: ID of the playlist.
+        from_index: Current index of the track to move (0-based).
+        to_position: New position for the track (0-based).
+
+    Returns:
+        Success message.
+    """
+    tidal = get_tidal_instance()
+
+    try:
+        # Get the playlist
+        playlist: UserPlaylist = tidal.session.playlist(playlist_id)
+
+        if not isinstance(playlist, UserPlaylist):
+            return f"✗ Playlist {playlist_id} is not a user playlist (cannot edit playlists you don't own)"
+
+        # Move the track
+        success = playlist.move_by_index(index=from_index, position=to_position)
+
+        if success:
+            return f"""✓ Successfully moved track from index {from_index} to position {to_position} in '{playlist.name}'
+
+Total tracks: {playlist.num_tracks}
+Playlist URL: {playlist.share_url}"""
+        else:
+            return f"✗ Failed to move track (index may be out of range)"
+
+    except Exception as e:
+        return f"✗ Failed to reorder playlist: {e!s}"
+
+
+@require_auth
+async def clear_playlist(playlist_id: str) -> str:
+    """Remove all tracks from a playlist.
+
+    Args:
+        playlist_id: ID of the playlist to clear.
+
+    Returns:
+        Success message.
+    """
+    tidal = get_tidal_instance()
+
+    try:
+        # Get the playlist
+        playlist: UserPlaylist = tidal.session.playlist(playlist_id)
+
+        if not isinstance(playlist, UserPlaylist):
+            return f"✗ Playlist {playlist_id} is not a user playlist (cannot edit playlists you don't own)"
+
+        playlist_name = playlist.name
+        original_count = playlist.num_tracks
+
+        # Clear all tracks
+        success = playlist.clear()
+
+        if success:
+            return f"""✓ Playlist '{playlist_name}' cleared successfully
+
+Removed {original_count} track(s)
+Playlist URL: {playlist.share_url}"""
+        else:
+            return "✗ Failed to clear playlist (unknown error)"
+
+    except Exception as e:
+        return f"✗ Failed to clear playlist: {e!s}"
+
+
+@require_auth
+async def merge_playlists(
+    target_playlist_id: str, source_playlist_id: str, allow_duplicates: bool = False
+) -> str:
+    """Merge tracks from one playlist into another.
+
+    Args:
+        target_playlist_id: ID of the playlist to merge into.
+        source_playlist_id: ID of the playlist to merge from.
+        allow_duplicates: Whether to allow duplicate tracks (default: False).
+
+    Returns:
+        Success message with count of added tracks.
+    """
+    tidal = get_tidal_instance()
+
+    try:
+        # Get the target playlist
+        target_playlist: UserPlaylist = tidal.session.playlist(target_playlist_id)
+
+        if not isinstance(target_playlist, UserPlaylist):
+            return f"✗ Target playlist {target_playlist_id} is not a user playlist (cannot edit playlists you don't own)"
+
+        # Get source playlist name for display
+        source_playlist = tidal.session.playlist(source_playlist_id)
+        source_name = source_playlist.name
+
+        # Merge playlists
+        added_item_ids = target_playlist.merge(
+            playlist=source_playlist_id, allow_duplicates=allow_duplicates, allow_missing=True
+        )
+
+        added_count = len(added_item_ids)
+
+        return f"""✓ Successfully merged playlists!
+
+Merged '{source_name}' into '{target_playlist.name}'
+Added {added_count} track(s)
+Total tracks in target playlist: {target_playlist.num_tracks}
+Playlist URL: {target_playlist.share_url}"""
+
+    except Exception as e:
+        return f"✗ Failed to merge playlists: {e!s}"
+
+
+@require_auth
+async def create_playlist_folder(title: str, parent_folder_id: str = "root") -> str:
+    """Create a new folder for organizing playlists.
+
+    Args:
+        title: Folder name.
+        parent_folder_id: ID of parent folder (default: "root" for top level).
+
+    Returns:
+        Success message with folder ID.
+    """
+    tidal = get_tidal_instance()
+
+    try:
+        # Create the folder
+        folder: Folder = tidal.session.user.create_folder(title=title, parent_id=parent_folder_id)
+
+        return f"""✓ Folder created successfully!
+
+Name: {folder.name}
+Folder ID: {folder.id}
+Parent: {parent_folder_id}
+
+Use move_playlist_to_folder to organize your playlists into this folder."""
+
+    except Exception as e:
+        return f"✗ Failed to create folder: {e!s}"
+
+
+@require_auth
+async def move_playlist_to_folder(playlist_id: str, folder_id: str | None = None) -> str:
+    """Move a playlist into a folder (or to root if no folder specified).
+
+    Args:
+        playlist_id: ID of the playlist to move.
+        folder_id: ID of the target folder (None or "root" to move to root level).
+
+    Returns:
+        Success message.
+    """
+    tidal = get_tidal_instance()
+
+    try:
+        # Get the playlist to get its TRN
+        playlist = tidal.session.playlist(playlist_id)
+        playlist_trn = f"trn:playlist:{playlist_id}"
+        playlist_name = playlist.name
+
+        if folder_id is None or folder_id == "root":
+            # Move to root - need to access the root folder
+            # Get the user's folders to find current folder
+            # We'll use the folder API directly
+            # Note: Moving to root requires accessing a folder object
+            # For simplicity, we'll create a temporary folder reference
+            from tidalapi.playlist import Folder
+
+            # Create a minimal folder object just to access the move method
+            # This is a workaround since TIDAL API requires folder context
+            user_id = tidal.session.user.id
+            folder = Folder(session=tidal.session, folder_id="root")
+            folder.move_items_to_root([playlist_trn])
+            destination = "root level"
+        else:
+            # Move to specific folder
+            folder: Folder = tidal.session.folder(folder_id)
+            folder.move_items_to_folder([playlist_trn], folder=folder_id)
+            destination = f"folder '{folder.name}'"
+
+        return f"""✓ Playlist moved successfully!
+
+Moved '{playlist_name}' to {destination}
+Playlist ID: {playlist_id}
+Playlist URL: {playlist.share_url}"""
+
+    except Exception as e:
+        return f"✗ Failed to move playlist: {e!s}"

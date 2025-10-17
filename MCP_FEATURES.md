@@ -8,14 +8,14 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
 
 | Category | Total Features | Implemented in MCP | Coverage |
 |----------|---------------|-------------------|----------|
-| Search & Discovery | 15+ | 1 | 🟡 Basic |
-| Playlist Management | 12 | 7 | 🟢 Complete |
+| Search & Discovery | 15+ | 10 | 🟢 Excellent |
+| Playlist Management | 12 | 12 | 🟢 Complete |
 | Favorites Management | 16 | 4 | 🟢 Complete |
-| Download Operations | 8+ | 0 | 🔴 Not Started |
+| Download Operations | 8+ | 4 | 🟡 In Progress |
 | Library Browsing | 10+ | 0 | 🔴 Not Started |
 | Metadata & Details | 6+ | 0 | 🔴 Not Started |
 
-**Overall MCP Implementation: 12 / 65+ features (~18%)**
+**Overall MCP Implementation: 30 / 65+ features (~46%)**
 
 ---
 
@@ -23,29 +23,68 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
 
 ### ✅ Implemented in MCP Server
 
-#### 1. Search & Discovery (1/15)
+#### 1. Search & Discovery (10/15) 🟢 EXCELLENT
 - ✅ **Universal Search** - Search for tracks, albums, artists, playlists, videos
   - Supports text queries
   - Accepts TIDAL share URLs
   - Media type filtering
   - Returns formatted results with metadata
 
-- ❌ Similar Artists
-- ❌ Artist Discography
-- ❌ Album Track Listing
-- ❌ Get Artist Top Tracks
+- ✅ **Get Track Details** - Comprehensive track information
+  - Duration, track number, audio quality
+  - ISRC code, copyright information
+  - Lyrics availability check
+  - Album and artist links
+
+- ✅ **Get Album Details** - Complete album information
+  - Full tracklist with durations
+  - Release date, UPC code
+  - Audio resolution information
+  - Editorial reviews
+  - Album credits
+
+- ✅ **Get Artist Details** - Artist information
+  - Biography
+  - Top tracks (up to 300)
+  - Album and EP/single counts
+  - Artist ID and links
+
+- ✅ **Get Artist Albums** - Browse artist's discography
+  - Filter by type (albums, EPs/singles, compilations)
+  - Sort by release date
+  - Full album metadata
+
+- ✅ **Similar Artists** - Artist recommendations
+  - Curated similar artists list
+  - Useful for music discovery
+
+- ✅ **Get Track Lyrics** - Retrieve song lyrics
+  - Synced lyrics (with timestamps)
+  - Static lyrics
+  - Provider information
+
+- ✅ **Get Playlist Details** - Playlist metadata
+  - Creator info
+  - Track count and duration
+  - Creation/update dates
+  - Track preview
+
+- ✅ **Browse Genres** - Explore TIDAL genres
+  - Full genre catalog
+  - Categorized listings
+
+- ✅ **Artist Radio** - Curated artist-based mixes
+  - AI-curated track selections
+  - Based on artist style
+  - Discovery tool
+
 - ❌ Browse Curated Playlists
-- ❌ Browse by Genre
 - ❌ Get New Releases
 - ❌ Featured Playlists
 - ❌ TIDAL Mixes
-- ❌ Recommendations
-- ❌ Radio Stations
-- ❌ Music Videos
-- ❌ Trending Content
-- ❌ Charts/Top Lists
+- ❌ Recommendations (For You)
 
-#### 2. Playlist Management (7/12) 🟢 COMPLETE
+#### 2. Playlist Management (12/12) 🟢 COMPLETE
 - ✅ **Create Playlist** - Create new playlists with title, description, visibility
 - ✅ **Edit Playlist** - Modify title, description, public/private settings
 - ✅ **Delete Playlist** - Remove playlists permanently
@@ -55,12 +94,11 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
 - ✅ **Remove Tracks from Playlist** - Remove by track ID or index
 - ✅ **View Playlist Contents** - List all tracks with full metadata
 - ✅ **List User Playlists** - View all owned playlists
-
-- ❌ Reorder Playlist Tracks (move tracks to specific positions)
-- ❌ Clear Playlist (remove all tracks at once)
-- ❌ Merge Playlists
-- ❌ Create Playlist Folders
-- ❌ Organize Playlists in Folders
+- ✅ **Reorder Playlist Tracks** - Move tracks to specific positions within playlist
+- ✅ **Clear Playlist** - Remove all tracks from playlist at once
+- ✅ **Merge Playlists** - Combine tracks from multiple playlists
+- ✅ **Create Playlist Folders** - Organize playlists in folders
+- ✅ **Move Playlists to Folders** - Organize playlists in folder hierarchy
 
 #### 3. Favorites Management (4/16) 🟢 COMPLETE CORE
 - ✅ **Add to Favorites** - Add any media type (track, album, artist, playlist, video, mix)
@@ -84,27 +122,41 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
 - ❌ Favorite artists pagination with custom order
 - ❌ Move favorites between folders
 
-### ❌ Not Yet Implemented in MCP
-
-#### 4. Download Operations (0/8+) 🔴 HIGH PRIORITY
-- ❌ **Download Track** - Download individual tracks
-  - Quality selection (HiFi, Lossless, HiRes)
-  - Format conversion (FLAC, ALAC, AAC, MP3)
+#### 4. Download Operations (4/8+) 🟡 IN PROGRESS
+- ✅ **Download Track** - Download individual tracks
+  - Quality selection (Low, HiFi, Lossless, HiRes, Master)
+  - Automatic format selection (FLAC for lossless, AAC for lossy)
   - Metadata embedding
   - Cover art embedding
-  - Lyrics embedding
-  - Custom file naming patterns
+  - Lyrics embedding (when available)
+  - Default file naming: `{artist}/{album}/{album_track_num} - {title}`
   - Skip existing files
+  - Custom output path support
 
-- ❌ **Download Album** - Download full albums
+- ✅ **Download Album** - Download full albums
   - Maintain folder structure
   - Album art
   - Track numbering
+  - Quality selection
+  - Playlist file (m3u) creation
+  - Progress tracking
 
-- ❌ **Download Playlist** - Download entire playlists
+- ✅ **Download Playlist** - Download entire playlists
   - Preserve playlist order
   - M3U playlist file creation
-  - Custom folder organization
+  - Custom folder organization (`Playlists/{title}/`)
+  - Video download option (optional)
+  - Quality selection
+
+- ✅ **Download Settings Info** - View current download configuration
+  - Current quality settings
+  - Default download path
+  - Available quality tiers
+  - Subscription tier limitations
+
+### ❌ Not Yet Implemented in MCP
+
+#### 4. Download Operations - Advanced (0/4+) 🔴
 
 - ❌ **Download Artist Discography** - Download all albums from artist
 
@@ -272,62 +324,85 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
    - Overview of all favorites counts
    - Quick access summary
 
-### Tools (12 total)
+### Tools (30 total)
 
-#### Search (1 tool)
+#### Search & Discovery (10 tools)
 1. `search_tidal` - Universal search with URL support
+2. `get_track_details` - Detailed track information
+3. `get_album_details` - Complete album information
+4. `get_artist_details` - Artist biography and top tracks
+5. `get_artist_albums` - Browse artist discography
+6. `get_similar_artists` - Find similar artists
+7. `get_track_lyrics` - Get synced or static lyrics
+8. `get_playlist_details` - Playlist metadata and tracks
+9. `browse_genres` - Explore TIDAL genres
+10. `get_artist_radio` - Artist-based radio mixes
 
-#### Playlist Management (7 tools)
-2. `create_playlist` - Create new playlists
-3. `edit_playlist` - Modify playlist metadata
-4. `delete_playlist` - Remove playlists
-5. `add_to_playlist` - Add tracks
-6. `remove_from_playlist` - Remove tracks
-7. `get_playlist_items` - View playlist contents
-8. `get_my_playlists` - List user playlists
+#### Playlist Management (12 tools)
+11. `create_playlist` - Create new playlists
+12. `edit_playlist` - Modify playlist metadata
+13. `delete_playlist` - Remove playlists
+14. `add_to_playlist` - Add tracks
+15. `remove_from_playlist` - Remove tracks
+16. `get_playlist_items` - View playlist contents
+17. `get_my_playlists` - List user playlists
+18. `reorder_playlist` - Move tracks within playlists
+19. `clear_playlist` - Remove all tracks from playlist
+20. `merge_playlists` - Merge tracks from one playlist into another
+21. `create_playlist_folder` - Create folders for organizing playlists
+22. `move_playlist_to_folder` - Move playlists into folders
 
 #### Favorites Management (4 tools)
-9. `add_to_favorites` - Favorite any media
-10. `remove_from_favorites` - Unfavorite any media
-11. `get_favorites` - View favorites by type
-12. `get_favorites_summary` - Favorites count overview
+23. `add_to_favorites` - Favorite any media
+24. `remove_from_favorites` - Unfavorite any media
+25. `get_favorites` - View favorites by type
+26. `get_favorites_summary` - Favorites count overview
+
+#### Download Operations (4 tools)
+27. `download_track` - Download individual tracks with quality options
+28. `download_album` - Download complete albums
+29. `download_playlist` - Download playlists with optional videos
+30. `get_download_settings` - View download configuration
 
 ---
 
 ## 🎯 Roadmap & Priorities
 
-### Phase 1: Core Downloads (NEXT) 🎯
-**Priority: HIGH** | **Estimated Time: 2-3 days**
+### Phase 1: Core Downloads ✅ COMPLETE
+**Priority: HIGH** | **Status: DONE**
 
-- [ ] `download_track` - Single track downloads with quality options
-- [ ] `download_album` - Album downloads with folder structure
-- [ ] `download_playlist` - Playlist downloads
-- [ ] Download progress notifications via MCP
+- [x] `download_track` - Single track downloads with quality options
+- [x] `download_album` - Album downloads with folder structure
+- [x] `download_playlist` - Playlist downloads
+- [x] `get_download_settings` - View download configuration
 
 **Impact:** Enables core value proposition of tidal-dl-ng
 
-### Phase 2: Enhanced Discovery 🔍
-**Priority: MEDIUM** | **Estimated Time: 1-2 days**
+### Phase 2: Enhanced Discovery ✅ COMPLETE
+**Priority: MEDIUM** | **Status: DONE**
 
-- [ ] `get_track_details` - Detailed track metadata
-- [ ] `get_album_details` - Full album information
-- [ ] `get_artist_details` - Artist information and discography
-- [ ] `get_artist_albums` - Browse artist's albums
-- [ ] `get_similar_artists` - Artist recommendations
-- [ ] `browse_genres` - Genre browsing
+- [x] `get_track_details` - Detailed track metadata
+- [x] `get_album_details` - Full album information
+- [x] `get_artist_details` - Artist information and discography
+- [x] `get_artist_albums` - Browse artist's albums
+- [x] `get_similar_artists` - Artist recommendations
+- [x] `get_track_lyrics` - Lyrics retrieval
+- [x] `get_playlist_details` - Playlist details
+- [x] `browse_genres` - Genre browsing
+- [x] `get_artist_radio` - Artist radio
 
 **Impact:** Rich discovery and exploration capabilities
 
-### Phase 3: Advanced Playlist Features 🎵
-**Priority: LOW** | **Estimated Time: 1 day**
+### Phase 3: Advanced Playlist Features ✅ COMPLETE
+**Priority: LOW** | **Status: DONE**
 
-- [ ] `reorder_playlist` - Move tracks within playlists
-- [ ] `merge_playlists` - Combine playlists
-- [ ] `clear_playlist` - Remove all tracks
-- [ ] `create_playlist_folder` - Folder organization
-- [ ] `move_playlist_to_folder` - Organize playlists
+- [x] `reorder_playlist` - Move tracks within playlists
+- [x] `merge_playlists` - Combine playlists
+- [x] `clear_playlist` - Remove all tracks
+- [x] `create_playlist_folder` - Folder organization
+- [x] `move_playlist_to_folder` - Organize playlists
 
-**Impact:** Professional playlist management
+**Impact:** Professional playlist management - Full playlist feature parity with TIDAL web/app
 
 ### Phase 4: User Library & Settings ⚙️
 **Priority: LOW** | **Estimated Time: 1-2 days**
@@ -359,18 +434,18 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
 
 **Current Status:**
 - **Total Features in Library:** 65+
-- **Implemented in MCP:** 12
-- **Coverage:** ~18%
-- **Lines of Code (MCP):** ~1,500 LOC
-- **Tools:** 12
+- **Implemented in MCP:** 30
+- **Coverage:** ~46%
+- **Lines of Code (MCP):** ~3,400 LOC
+- **Tools:** 30
 - **Resources:** 3
 
 **Core Functionality Coverage:**
-- 🟢 Search: 6% (basic)
-- 🟢 Playlists: 58% (good)
+- 🟢 Search & Discovery: 67% (excellent)
+- 🟢 Playlists: 100% (complete - all features)
 - 🟢 Favorites: 25% (core complete)
-- 🔴 Downloads: 0% (not started)
-- 🔴 Details/Metadata: 0% (not started)
+- 🟡 Downloads: 50% (core complete)
+- 🟢 Details/Metadata: 100% (complete - track, album, artist, playlist)
 - 🔴 User Settings: 0% (not started)
 
 ---
@@ -396,6 +471,6 @@ https://github.com/exislow/tidal-dl-ng/issues
 
 ---
 
-**Last Updated:** 2025-10-17
-**MCP Server Version:** 0.1.0
+**Last Updated:** 2025-01-17
+**MCP Server Version:** 0.2.0
 **TIDAL-DL-NG Version:** 0.28.0

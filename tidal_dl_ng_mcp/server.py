@@ -20,12 +20,34 @@ from tidal_dl_ng_mcp.tools.playlist import (
     remove_from_playlist,
     get_playlist_items,
     get_my_playlists,
+    reorder_playlist,
+    clear_playlist,
+    merge_playlists,
+    create_playlist_folder,
+    move_playlist_to_folder,
 )
 from tidal_dl_ng_mcp.tools.favorites import (
     add_to_favorites,
     remove_from_favorites,
     get_favorites,
     get_favorites_summary,
+)
+from tidal_dl_ng_mcp.tools.download import (
+    download_track,
+    download_album,
+    download_playlist,
+    get_download_settings,
+)
+from tidal_dl_ng_mcp.tools.discovery import (
+    get_track_details,
+    get_album_details,
+    get_artist_details,
+    get_artist_albums,
+    get_similar_artists,
+    get_track_lyrics,
+    get_playlist_details,
+    browse_genres,
+    get_artist_radio,
 )
 from tidal_dl_ng_mcp.utils.auth import get_tidal_instance
 
@@ -244,6 +266,76 @@ async def list_tools() -> list[Tool]:
                 },
             },
         ),
+        Tool(
+            name="reorder_playlist",
+            description="Move a track within a playlist to a new position (reorder tracks).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "playlist_id": {"type": "string", "description": "ID of the playlist"},
+                    "from_index": {"type": "integer", "description": "Current index of the track (0-based)"},
+                    "to_position": {"type": "integer", "description": "New position for the track (0-based)"},
+                },
+                "required": ["playlist_id", "from_index", "to_position"],
+            },
+        ),
+        Tool(
+            name="clear_playlist",
+            description="Remove all tracks from a playlist (clear the playlist).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "playlist_id": {"type": "string", "description": "ID of the playlist to clear"},
+                },
+                "required": ["playlist_id"],
+            },
+        ),
+        Tool(
+            name="merge_playlists",
+            description="Merge tracks from one playlist into another.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "target_playlist_id": {"type": "string", "description": "ID of the playlist to merge into"},
+                    "source_playlist_id": {"type": "string", "description": "ID of the playlist to merge from"},
+                    "allow_duplicates": {
+                        "type": "boolean",
+                        "description": "Allow duplicate tracks (default: false)",
+                    },
+                },
+                "required": ["target_playlist_id", "source_playlist_id"],
+            },
+        ),
+        Tool(
+            name="create_playlist_folder",
+            description="Create a new folder for organizing playlists.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "title": {"type": "string", "description": "Folder name"},
+                    "parent_folder_id": {
+                        "type": "string",
+                        "description": "Parent folder ID (default: 'root' for top level)",
+                    },
+                },
+                "required": ["title"],
+            },
+        ),
+        Tool(
+            name="move_playlist_to_folder",
+            description="Move a playlist into a folder or to root level.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "playlist_id": {"type": "string", "description": "ID of the playlist to move"},
+                    "folder_id": {
+                        "type": "string",
+                        "description": "Target folder ID (None or 'root' to move to root level)",
+                    },
+                },
+                "required": ["playlist_id"],
+            },
+        ),
         # Favorites Management
         Tool(
             name="add_to_favorites",
@@ -298,6 +390,172 @@ async def list_tools() -> list[Tool]:
             name="get_favorites_summary",
             description="Get a summary count of all your favorites by type.",
             inputSchema={"type": "object", "properties": {}},
+        ),
+        # Downloads
+        Tool(
+            name="download_track",
+            description="Download a track from TIDAL with specified quality.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "track_id": {"type": "string", "description": "TIDAL track ID"},
+                    "quality": {
+                        "type": "string",
+                        "enum": ["Low", "HiFi", "Lossless", "HiRes", "Master"],
+                        "description": "Audio quality (default: HiFi)",
+                    },
+                    "output_path": {"type": "string", "description": "Custom output path (optional)"},
+                },
+                "required": ["track_id"],
+            },
+        ),
+        Tool(
+            name="download_album",
+            description="Download an entire album from TIDAL.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "album_id": {"type": "string", "description": "TIDAL album ID"},
+                    "quality": {
+                        "type": "string",
+                        "enum": ["Low", "HiFi", "Lossless", "HiRes", "Master"],
+                        "description": "Audio quality (default: HiFi)",
+                    },
+                    "output_path": {"type": "string", "description": "Custom output path (optional)"},
+                },
+                "required": ["album_id"],
+            },
+        ),
+        Tool(
+            name="download_playlist",
+            description="Download a playlist from TIDAL.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "playlist_id": {"type": "string", "description": "TIDAL playlist ID"},
+                    "quality": {
+                        "type": "string",
+                        "enum": ["Low", "HiFi", "Lossless", "HiRes", "Master"],
+                        "description": "Audio quality (default: HiFi)",
+                    },
+                    "output_path": {"type": "string", "description": "Custom output path (optional)"},
+                    "include_videos": {"type": "boolean", "description": "Include videos (default: false)"},
+                },
+                "required": ["playlist_id"],
+            },
+        ),
+        Tool(
+            name="get_download_settings",
+            description="Get current download settings and quality information.",
+            inputSchema={"type": "object", "properties": {}},
+        ),
+        # Discovery & Details
+        Tool(
+            name="get_track_details",
+            description="Get detailed information about a track including metadata, quality, ISRC, copyright, and lyrics availability.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "track_id": {"type": "string", "description": "TIDAL track ID"},
+                },
+                "required": ["track_id"],
+            },
+        ),
+        Tool(
+            name="get_album_details",
+            description="Get detailed information about an album including tracks, release date, UPC, credits, and editorial review.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "album_id": {"type": "string", "description": "TIDAL album ID"},
+                },
+                "required": ["album_id"],
+            },
+        ),
+        Tool(
+            name="get_artist_details",
+            description="Get detailed information about an artist including biography, top tracks, and discography counts.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "artist_id": {"type": "string", "description": "TIDAL artist ID"},
+                    "include_top_tracks": {"type": "boolean", "description": "Include top tracks (default: true)"},
+                },
+                "required": ["artist_id"],
+            },
+        ),
+        Tool(
+            name="get_artist_albums",
+            description="Get albums by an artist, filterable by type (albums, EPs/singles, compilations).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "artist_id": {"type": "string", "description": "TIDAL artist ID"},
+                    "album_type": {
+                        "type": "string",
+                        "enum": ["all", "albums", "eps_singles", "other"],
+                        "description": "Type of albums to retrieve (default: all)",
+                    },
+                    "limit": {"type": "integer", "description": "Maximum albums to return (default: 50)"},
+                },
+                "required": ["artist_id"],
+            },
+        ),
+        Tool(
+            name="get_similar_artists",
+            description="Get artists similar to a given artist.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "artist_id": {"type": "string", "description": "TIDAL artist ID"},
+                    "limit": {"type": "integer", "description": "Maximum artists to return (default: 10)"},
+                },
+                "required": ["artist_id"],
+            },
+        ),
+        Tool(
+            name="get_track_lyrics",
+            description="Get lyrics for a track (synced or static).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "track_id": {"type": "string", "description": "TIDAL track ID"},
+                },
+                "required": ["track_id"],
+            },
+        ),
+        Tool(
+            name="get_playlist_details",
+            description="Get detailed information about a playlist including creator, tracks, duration, and metadata.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "playlist_id": {"type": "string", "description": "TIDAL playlist ID"},
+                },
+                "required": ["playlist_id"],
+            },
+        ),
+        Tool(
+            name="browse_genres",
+            description="Browse available music genres on TIDAL.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "limit": {"type": "integer", "description": "Maximum genres to return (default: 50)"},
+                },
+            },
+        ),
+        Tool(
+            name="get_artist_radio",
+            description="Get artist radio - a curated mix of tracks inspired by an artist's style.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "artist_id": {"type": "string", "description": "TIDAL artist ID"},
+                    "limit": {"type": "integer", "description": "Maximum tracks to return (default: 50)"},
+                },
+                "required": ["artist_id"],
+            },
         ),
     ]
 
@@ -376,6 +634,40 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
             )
             return [TextContent(type="text", text=result)]
 
+        elif name == "reorder_playlist":
+            result = await reorder_playlist(
+                arguments.get("playlist_id", ""),
+                arguments.get("from_index", 0),
+                arguments.get("to_position", 0),
+            )
+            return [TextContent(type="text", text=result)]
+
+        elif name == "clear_playlist":
+            result = await clear_playlist(arguments.get("playlist_id", ""))
+            return [TextContent(type="text", text=result)]
+
+        elif name == "merge_playlists":
+            result = await merge_playlists(
+                arguments.get("target_playlist_id", ""),
+                arguments.get("source_playlist_id", ""),
+                arguments.get("allow_duplicates", False),
+            )
+            return [TextContent(type="text", text=result)]
+
+        elif name == "create_playlist_folder":
+            result = await create_playlist_folder(
+                arguments.get("title", ""),
+                arguments.get("parent_folder_id", "root"),
+            )
+            return [TextContent(type="text", text=result)]
+
+        elif name == "move_playlist_to_folder":
+            result = await move_playlist_to_folder(
+                arguments.get("playlist_id", ""),
+                arguments.get("folder_id"),
+            )
+            return [TextContent(type="text", text=result)]
+
         # Favorites Management
         elif name == "add_to_favorites":
             result = await add_to_favorites(
@@ -401,6 +693,86 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
 
         elif name == "get_favorites_summary":
             result = await get_favorites_summary()
+            return [TextContent(type="text", text=result)]
+
+        # Downloads
+        elif name == "download_track":
+            result = await download_track(
+                arguments.get("track_id", ""),
+                arguments.get("quality", "HiFi"),
+                arguments.get("output_path"),
+            )
+            return [TextContent(type="text", text=result)]
+
+        elif name == "download_album":
+            result = await download_album(
+                arguments.get("album_id", ""),
+                arguments.get("quality", "HiFi"),
+                arguments.get("output_path"),
+            )
+            return [TextContent(type="text", text=result)]
+
+        elif name == "download_playlist":
+            result = await download_playlist(
+                arguments.get("playlist_id", ""),
+                arguments.get("quality", "HiFi"),
+                arguments.get("output_path"),
+                arguments.get("include_videos", False),
+            )
+            return [TextContent(type="text", text=result)]
+
+        elif name == "get_download_settings":
+            result = await get_download_settings()
+            return [TextContent(type="text", text=result)]
+
+        # Discovery & Details
+        elif name == "get_track_details":
+            result = await get_track_details(arguments.get("track_id", ""))
+            return [TextContent(type="text", text=result)]
+
+        elif name == "get_album_details":
+            result = await get_album_details(arguments.get("album_id", ""))
+            return [TextContent(type="text", text=result)]
+
+        elif name == "get_artist_details":
+            result = await get_artist_details(
+                arguments.get("artist_id", ""),
+                arguments.get("include_top_tracks", True),
+            )
+            return [TextContent(type="text", text=result)]
+
+        elif name == "get_artist_albums":
+            result = await get_artist_albums(
+                arguments.get("artist_id", ""),
+                arguments.get("album_type", "all"),
+                arguments.get("limit", 50),
+            )
+            return [TextContent(type="text", text=result)]
+
+        elif name == "get_similar_artists":
+            result = await get_similar_artists(
+                arguments.get("artist_id", ""),
+                arguments.get("limit", 10),
+            )
+            return [TextContent(type="text", text=result)]
+
+        elif name == "get_track_lyrics":
+            result = await get_track_lyrics(arguments.get("track_id", ""))
+            return [TextContent(type="text", text=result)]
+
+        elif name == "get_playlist_details":
+            result = await get_playlist_details(arguments.get("playlist_id", ""))
+            return [TextContent(type="text", text=result)]
+
+        elif name == "browse_genres":
+            result = await browse_genres(arguments.get("limit", 50))
+            return [TextContent(type="text", text=result)]
+
+        elif name == "get_artist_radio":
+            result = await get_artist_radio(
+                arguments.get("artist_id", ""),
+                arguments.get("limit", 50),
+            )
             return [TextContent(type="text", text=result)]
 
         else:
