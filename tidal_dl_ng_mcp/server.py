@@ -49,6 +49,15 @@ from tidal_dl_ng_mcp.tools.discovery import (
     browse_genres,
     get_artist_radio,
 )
+from tidal_dl_ng_mcp.tools.user import (
+    get_user_profile,
+    get_subscription_info,
+)
+from tidal_dl_ng_mcp.tools.browse import (
+    browse_home,
+    browse_explore,
+    get_mixes,
+)
 from tidal_dl_ng_mcp.utils.auth import get_tidal_instance
 
 # Configure logging
@@ -72,6 +81,12 @@ async def list_resources() -> list[Resource]:
             name="Authentication Status",
             mimeType="text/plain",
             description="Check TIDAL authentication status and get setup instructions",
+        ),
+        Resource(
+            uri="tidal://user/profile",
+            name="User Profile",
+            mimeType="text/plain",
+            description="View your TIDAL user profile and subscription information",
         ),
         Resource(
             uri="tidal://user/playlists",
@@ -119,6 +134,14 @@ To authenticate, run the following command in your terminal:
 This will guide you through the TIDAL login process. After logging in,
 restart Claude Desktop to use the TIDAL MCP server.
 """
+
+    elif uri == "tidal://user/profile":
+        try:
+            profile = await get_user_profile()
+            subscription = await get_subscription_info()
+            return f"{profile}\n\n{'=' * 50}\n\n{subscription}"
+        except Exception as e:
+            return f"✗ Failed to get user profile: {e!s}"
 
     elif uri == "tidal://user/playlists":
         try:
@@ -557,6 +580,47 @@ async def list_tools() -> list[Tool]:
                 "required": ["artist_id"],
             },
         ),
+        Tool(
+            name="browse_home",
+            description="Browse TIDAL home page with personalized recommendations, new releases, and featured content.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "limit": {"type": "integer", "description": "Maximum items per category (default: 50)"},
+                },
+            },
+        ),
+        Tool(
+            name="browse_explore",
+            description="Browse TIDAL explore page with genres, moods, activities, and discovery playlists.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "limit": {"type": "integer", "description": "Maximum items per category (default: 20)"},
+                },
+            },
+        ),
+        Tool(
+            name="get_mixes",
+            description="Get TIDAL Mixes - personalized music collections curated based on your listening habits.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "limit": {"type": "integer", "description": "Maximum mixes to return (default: 20)"},
+                },
+            },
+        ),
+        # User Account
+        Tool(
+            name="get_user_profile",
+            description="Get your TIDAL user profile information including username, email, and account details.",
+            inputSchema={"type": "object", "properties": {}},
+        ),
+        Tool(
+            name="get_subscription_info",
+            description="Get your TIDAL subscription tier and audio quality information.",
+            inputSchema={"type": "object", "properties": {}},
+        ),
     ]
 
 
@@ -773,6 +837,27 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
                 arguments.get("artist_id", ""),
                 arguments.get("limit", 50),
             )
+            return [TextContent(type="text", text=result)]
+
+        elif name == "browse_home":
+            result = await browse_home(arguments.get("limit", 50))
+            return [TextContent(type="text", text=result)]
+
+        elif name == "browse_explore":
+            result = await browse_explore(arguments.get("limit", 20))
+            return [TextContent(type="text", text=result)]
+
+        elif name == "get_mixes":
+            result = await get_mixes(arguments.get("limit", 20))
+            return [TextContent(type="text", text=result)]
+
+        # User Account
+        elif name == "get_user_profile":
+            result = await get_user_profile()
+            return [TextContent(type="text", text=result)]
+
+        elif name == "get_subscription_info":
+            result = await get_subscription_info()
             return [TextContent(type="text", text=result)]
 
         else:

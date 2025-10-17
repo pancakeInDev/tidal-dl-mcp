@@ -8,14 +8,15 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
 
 | Category | Total Features | Implemented in MCP | Coverage |
 |----------|---------------|-------------------|----------|
-| Search & Discovery | 15+ | 10 | 🟢 Excellent |
+| Search & Discovery | 15+ | 13 | 🟢 Excellent |
 | Playlist Management | 12 | 12 | 🟢 Complete |
 | Favorites Management | 16 | 4 | 🟢 Complete |
 | Download Operations | 8+ | 4 | 🟡 In Progress |
+| User Account & Settings | 8 | 2 | 🟡 In Progress |
 | Library Browsing | 10+ | 0 | 🔴 Not Started |
 | Metadata & Details | 6+ | 0 | 🔴 Not Started |
 
-**Overall MCP Implementation: 30 / 65+ features (~46%)**
+**Overall MCP Implementation: 35 / 70+ features (~50%)**
 
 ---
 
@@ -23,7 +24,7 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
 
 ### ✅ Implemented in MCP Server
 
-#### 1. Search & Discovery (10/15) 🟢 EXCELLENT
+#### 1. Search & Discovery (13/15) 🟢 EXCELLENT
 - ✅ **Universal Search** - Search for tracks, albums, artists, playlists, videos
   - Supports text queries
   - Accepts TIDAL share URLs
@@ -78,11 +79,25 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
   - Based on artist style
   - Discovery tool
 
-- ❌ Browse Curated Playlists
-- ❌ Get New Releases
-- ❌ Featured Playlists
-- ❌ TIDAL Mixes
-- ❌ Recommendations (For You)
+- ✅ **Browse Home** - Personalized home page
+  - Recommended new tracks
+  - Recently played
+  - Featured content
+  - Shortcuts and essentials
+
+- ✅ **Browse Explore** - Discovery page
+  - Genres and subgenres
+  - Moods & Activities
+  - Decades and eras
+  - Curated playlists
+
+- ✅ **TIDAL Mixes** - Personalized collections
+  - AI-curated mixes
+  - Based on listening habits
+  - Updated regularly
+
+- ❌ Get New Releases (dedicated endpoint)
+- ❌ For You Recommendations (dedicated endpoint)
 
 #### 2. Playlist Management (12/12) 🟢 COMPLETE
 - ✅ **Create Playlist** - Create new playlists with title, description, visibility
@@ -239,17 +254,18 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
   - Sort by release date
   - Filter by album type (album, EP, single, compilation)
 
-#### 6. User Account & Settings (0/8) 🔴
-- ❌ **Get User Profile** - View user information
+#### 5. User Account & Settings (2/8) 🟡 IN PROGRESS
+- ✅ **Get User Profile** - View user information
+  - User ID
   - Username
-  - Subscription tier
-  - Country
-  - Account creation date
+  - Full name
+  - Email address
 
-- ❌ **Get Subscription Info** - Subscription details
-  - Tier (HiFi, HiFi Plus, Free)
-  - Audio quality limits
-  - Expiration date
+- ✅ **Get Subscription Info** - Subscription details
+  - Tier detection (Free, Premium, HiFi, HiFi Plus)
+  - Audio quality limits (96 kbps to 9216 kbps)
+  - Format information (AAC vs FLAC)
+  - Detailed tier comparison
 
 - ❌ **Configure Download Settings**
   - Default audio quality
@@ -310,23 +326,27 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
 
 ## 🔧 MCP-Specific Features
 
-### Resources (3 total)
+### Resources (4 total)
 1. ✅ **Authentication Status** (`tidal://auth/status`)
    - Check login status
    - View user ID
    - Get setup instructions
 
-2. ✅ **My Playlists** (`tidal://user/playlists`)
+2. ✅ **User Profile** (`tidal://user/profile`)
+   - View user profile and subscription information
+   - Quick access to account details
+
+3. ✅ **My Playlists** (`tidal://user/playlists`)
    - Quick view of all playlists
    - Accessible from resources panel
 
-3. ✅ **Favorites Summary** (`tidal://user/favorites`)
+4. ✅ **Favorites Summary** (`tidal://user/favorites`)
    - Overview of all favorites counts
    - Quick access summary
 
-### Tools (30 total)
+### Tools (35 total)
 
-#### Search & Discovery (10 tools)
+#### Search & Discovery (13 tools)
 1. `search_tidal` - Universal search with URL support
 2. `get_track_details` - Detailed track information
 3. `get_album_details` - Complete album information
@@ -337,6 +357,9 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
 8. `get_playlist_details` - Playlist metadata and tracks
 9. `browse_genres` - Explore TIDAL genres
 10. `get_artist_radio` - Artist-based radio mixes
+11. `browse_home` - Browse home page with recommendations
+12. `browse_explore` - Browse explore page with genres and moods
+13. `get_mixes` - Get personalized TIDAL Mixes
 
 #### Playlist Management (12 tools)
 11. `create_playlist` - Create new playlists
@@ -363,6 +386,10 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
 28. `download_album` - Download complete albums
 29. `download_playlist` - Download playlists with optional videos
 30. `get_download_settings` - View download configuration
+
+#### User Account & Settings (2 tools)
+31. `get_user_profile` - View user profile information
+32. `get_subscription_info` - View subscription tier and audio quality limits
 
 ---
 
@@ -404,16 +431,16 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
 
 **Impact:** Professional playlist management - Full playlist feature parity with TIDAL web/app
 
-### Phase 4: User Library & Settings ⚙️
-**Priority: LOW** | **Estimated Time: 1-2 days**
+### Phase 4: User Library & Settings 🟡 IN PROGRESS
+**Priority: LOW** | **Status: STARTED**
 
-- [ ] `get_user_profile` - View user information
-- [ ] `get_subscription_info` - Subscription details
+- [x] `get_user_profile` - View user information
+- [x] `get_subscription_info` - Subscription details
+- [x] User profile resource
 - [ ] `configure_download_settings` - Set default quality, paths, formats
 - [ ] `get_download_history` - View download history
-- [ ] User settings resource
 
-**Impact:** Personalization and configuration
+**Impact:** Personalization and configuration - Core profile features complete
 
 ### Phase 5: Advanced Features 🚀
 **Priority: FUTURE** | **Estimated Time: 3-5 days**
@@ -433,20 +460,20 @@ This document provides a comprehensive overview of the TIDAL-DL-NG library capab
 ## 📈 Implementation Statistics
 
 **Current Status:**
-- **Total Features in Library:** 65+
-- **Implemented in MCP:** 30
-- **Coverage:** ~46%
-- **Lines of Code (MCP):** ~3,400 LOC
-- **Tools:** 30
-- **Resources:** 3
+- **Total Features in Library:** 70+
+- **Implemented in MCP:** 35
+- **Coverage:** ~50%
+- **Lines of Code (MCP):** ~3,900 LOC
+- **Tools:** 35
+- **Resources:** 4
 
 **Core Functionality Coverage:**
-- 🟢 Search & Discovery: 67% (excellent)
+- 🟢 Search & Discovery: 87% (excellent - nearly complete)
 - 🟢 Playlists: 100% (complete - all features)
 - 🟢 Favorites: 25% (core complete)
 - 🟡 Downloads: 50% (core complete)
 - 🟢 Details/Metadata: 100% (complete - track, album, artist, playlist)
-- 🔴 User Settings: 0% (not started)
+- 🟡 User Settings: 25% (profile & subscription complete)
 
 ---
 
@@ -471,6 +498,6 @@ https://github.com/exislow/tidal-dl-ng/issues
 
 ---
 
-**Last Updated:** 2025-01-17
+**Last Updated:** 2025-10-17
 **MCP Server Version:** 0.2.0
 **TIDAL-DL-NG Version:** 0.28.0

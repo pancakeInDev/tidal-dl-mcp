@@ -1,11 +1,11 @@
 # TIDAL-DL-NG MCP Server - Test Scenarios
 
 > **Comprehensive test prompts for Claude Desktop**
-> Use these prompts to verify all 30 tools are working correctly.
+> Use these prompts to verify all 32 tools are working correctly.
 
-**Last Updated:** 2025-01-17
+**Last Updated:** 2025-10-17
 **Version:** 0.2.0
-**Total Tools:** 30
+**Total Tools:** 32
 
 ---
 
@@ -217,6 +217,41 @@ Warning: This creates multiple files!
 
 ---
 
+## 👤 Category 5: User Account & Settings (2 tools)
+
+### Test 5.1: User Profile
+```
+Show me my TIDAL user profile information:
+1. Get my user profile
+2. Check that it shows:
+   - User ID
+   - Username
+   - Full name
+   - Email address
+```
+
+### Test 5.2: Subscription Info
+```
+Show me my TIDAL subscription information:
+1. Get my subscription info
+2. Verify it shows:
+   - Current subscription tier (Free, Premium, HiFi, or HiFi Plus)
+   - Audio quality setting
+   - Audio format (AAC or FLAC)
+   - Bitrate information
+   - Comparison of all available tiers
+```
+
+### Test 5.3: Combined Profile View
+```
+Using the tidal://user/profile resource:
+1. View the resource in the resources panel
+2. Verify it combines both profile and subscription information
+3. Check that all details are displayed correctly
+```
+
+---
+
 ## 🎯 Full Integration Test
 
 Use this comprehensive test that exercises multiple tools in a realistic workflow:
@@ -226,7 +261,8 @@ Let's do a complete TIDAL workflow test:
 
 **Setup Phase:**
 1. Check my authentication status
-2. Show me my current playlists and favorites summary
+2. Show me my user profile and subscription tier
+3. Show me my current playlists and favorites summary
 
 **Discovery Phase:**
 3. Search for albums by "Radiohead"
@@ -313,6 +349,7 @@ Measure approximate time and check for any slowdowns or errors.
 After any code changes, verify these critical paths still work:
 
 - [ ] Authentication status check
+- [ ] User profile and subscription info
 - [ ] Basic search (artist, album, track)
 - [ ] Get track/album/artist details
 - [ ] Create playlist
@@ -424,7 +461,10 @@ from tidal_dl_ng_mcp.tools.discovery import (
     get_artist_albums, get_similar_artists, get_track_lyrics,
     get_playlist_details, browse_genres, get_artist_radio
 )
-print('✓ All 30 tools import successfully')
+from tidal_dl_ng_mcp.tools.user import (
+    get_user_profile, get_subscription_info
+)
+print('✓ All 32 tools import successfully')
 "
 ```
 
@@ -438,7 +478,8 @@ print('✓ All 30 tools import successfully')
 | Playlist Management | 12 | ✅ | ✅ | ✅ | Complete |
 | Favorites | 4 | ✅ | ✅ | ✅ | Complete |
 | Downloads | 4 | ✅ | ⚠️ Optional | ✅ | Complete |
-| **Total** | **30** | **30/30** | **30/30** | **30/30** | **100%** |
+| User Account & Settings | 2 | ✅ | ✅ | ✅ | Complete |
+| **Total** | **32** | **32/32** | **32/32** | **32/32** | **100%** |
 
 ---
 

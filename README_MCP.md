@@ -877,12 +877,62 @@ get_artist_radio: artist_id="3503597", limit=30
 
 ---
 
+### User Account & Settings (2 tools)
+
+#### `get_user_profile`
+View your TIDAL user profile information.
+
+**No parameters required.**
+
+**Returns:**
+- User ID
+- Username
+- Full name (first name + last name)
+- Email address
+
+**Example:**
+```
+get_user_profile
+```
+
+---
+
+#### `get_subscription_info`
+View your TIDAL subscription tier and audio quality information.
+
+**No parameters required.**
+
+**Returns:**
+- Subscription tier (Free/Basic, Premium, HiFi, HiFi Plus)
+- Current audio quality setting
+- Audio format (AAC or FLAC)
+- Bitrate information
+- Detailed comparison of all available tiers
+
+**Quality to Tier Mapping:**
+- **96 kbps AAC** → Free/Basic tier
+- **320 kbps AAC** → Premium tier
+- **1411 kbps FLAC (16-bit/44.1kHz)** → HiFi tier (CD Quality)
+- **Up to 9216 kbps FLAC (24-bit/192kHz)** → HiFi Plus tier (Studio Master)
+
+**Example:**
+```
+get_subscription_info
+```
+
+**Note:** Your subscription tier determines which audio qualities are available for streaming and downloads. To change your subscription, visit https://tidal.com/account
+
+---
+
 ## 📊 Resources
 
 MCP Resources provide quick, read-only access to information:
 
 ### `tidal://auth/status`
 **Authentication Status** - Check if you're logged in to TIDAL and get setup instructions if needed.
+
+### `tidal://user/profile`
+**User Profile** - View your TIDAL user profile and subscription information in one place. Combines profile details and subscription tier info.
 
 ### `tidal://user/playlists`
 **My Playlists** - Quick view of all your playlists with IDs, track counts, and URLs.
@@ -1134,4 +1184,4 @@ Open an issue on GitHub: https://github.com/exislow/tidal-dl-ng/issues
 
 ---
 
-*Last Updated: 2025-01-17 | Version: 0.2.0*
+*Last Updated: 2025-10-17 | Version: 0.2.0*

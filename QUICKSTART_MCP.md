@@ -81,6 +81,7 @@ Show me my playlists
 - **Favorites:** "Show me my favorite albums"
 - **Downloads:** "Download this track in HiRes quality"
 - **Explore:** "Show me artist radio for Daft Punk"
+- **Profile:** "Show me my TIDAL profile and subscription info"
 
 ---
 
@@ -109,7 +110,7 @@ Show me my playlists
 
 ---
 
-## 🚀 Available Tools (30)
+## 🚀 Available Tools (32)
 
 ### Search & Discovery (10)
 - `search_tidal` - Find music content
@@ -149,6 +150,10 @@ Show me my playlists
 - `download_playlist` - Download playlists
 - `get_download_settings` - View download config
 
+### User Account (2)
+- `get_user_profile` - View profile info
+- `get_subscription_info` - View subscription tier
+
 ---
 
 **Need help?** See [README_MCP.md](README_MCP.md) for detailed instructions!
@@ -157,4 +162,4 @@ Show me my playlists
 
 ---
 
-*Setup time: ~5 minutes | Version: 0.1.0*
+*Setup time: ~5 minutes | Version: 0.2.0 | Last Updated: 2025-10-17*
