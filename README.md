@@ -84,6 +84,7 @@ If you like to have the GUI version only as a binary, have a look at the
 
 ## 🧁 Features
 
+### Core Features
 - Download tracks, videos, albums, playlists, your favorites etc.
 - Multithreaded and multi-chunked downloads
 - Metadata for songs
@@ -92,6 +93,29 @@ If you like to have the GUI version only as a binary, have a look at the
 - Lyrics and album art / cover download
 - Creates playlist files
 - Can symlink tracks instead of having several copies, if added to different playlist
+
+### 🤖 MCP Server (NEW!)
+
+**Use TIDAL with Claude Desktop and AI assistants!**
+
+The MCP (Model Context Protocol) server brings TIDAL library management to Claude and other AI assistants:
+
+- 🔍 **Search** - Find tracks, albums, artists, playlists through natural language
+- 📝 **Playlist Management** - Create, edit, organize playlists via conversation
+- ⭐ **Favorites** - Manage your favorite tracks, albums, artists, playlists
+- 🎵 **Library Organization** - Organize your entire TIDAL library with AI assistance
+
+**Quick Start:**
+```bash
+# See complete setup guide
+cat README_MCP.md
+```
+
+**Full Documentation:**
+- [MCP Setup & Configuration Guide](README_MCP.md) - Complete installation and usage
+- [MCP Features Coverage](MCP_FEATURES.md) - Detailed feature comparison
+
+> **Note:** The MCP server provides library management features. Downloads are still performed through the CLI/GUI.
 
 ## ▶️ Getting started with development
 
