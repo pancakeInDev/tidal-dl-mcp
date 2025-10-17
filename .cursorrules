@@ -1,0 +1,328 @@
+# Cursor AI Rules for TIDAL-DL-NG MCP Server
+
+## 📚 Documentation Update Requirements
+
+**CRITICAL: Documentation must ALWAYS be kept up-to-date when making changes!**
+
+### When to Update Documentation
+
+#### 1. Adding/Modifying MCP Tools
+**Files to update:**
+- `MCP_FEATURES.md` - Add tool to "Implemented" section, update statistics
+- `README_MCP.md` - Add tool documentation in "Available Tools" section
+- `QUICKSTART_MCP.md` - Add to tools list if it's a core feature
+
+**Required updates:**
+```markdown
+MCP_FEATURES.md:
+- Add tool to "✅ Implemented in MCP Server" section
+- Update coverage statistics table
+- Update "Tools" count in Implementation Statistics
+- Update "Last Updated" date
+
+README_MCP.md:
+- Add tool to "Available Tools" section with:
+  * Tool name
+  * Description
+  * Parameters with types
+  * Examples
+- Update feature list if it's a new category
+
+QUICKSTART_MCP.md:
+- Add to "Available Tools" list if it's user-facing
+```
+
+#### 2. Removing MCP Tools
+**Files to update:**
+- `MCP_FEATURES.md` - Remove from "Implemented", move to "Not Yet Implemented" if planned
+- `README_MCP.md` - Remove from "Available Tools"
+- `QUICKSTART_MCP.md` - Remove from tools list
+
+#### 3. Adding MCP Resources
+**Files to update:**
+- `MCP_FEATURES.md` - Update "Resources" count
+- `README_MCP.md` - Add to "Resources" section with URI, description, usage
+- Update statistics
+
+#### 4. Changing Tool Behavior
+**Files to update:**
+- `README_MCP.md` - Update tool description and examples
+- `MCP_FEATURES.md` - Update feature description if behavior changes significantly
+
+#### 5. Implementing Roadmap Features
+**Files to update:**
+- `MCP_FEATURES.md` - Move from "Not Yet Implemented" to "Implemented"
+- Update coverage percentages and statistics
+- Check off roadmap items
+- `README_MCP.md` - Add complete tool documentation
+
+#### 6. Fixing Bugs
+**Files to update:**
+- `README_MCP.md` - Add to troubleshooting section if it's a common issue
+- Update version numbers if needed
+
+#### 7. Changing Configuration
+**Files to update:**
+- `README_MCP.md` - Update "Configuration" section
+- Update all platform-specific examples
+- `QUICKSTART_MCP.md` - Update setup steps
+
+---
+
+## 🔍 Documentation Quality Standards
+
+### All Documentation Must:
+
+1. **Be Accurate**
+   - Reflect actual implementation
+   - Match current code behavior
+   - Include correct parameter types
+
+2. **Include Examples**
+   - Every tool must have usage examples
+   - Examples should be practical and realistic
+   - Show both simple and advanced usage
+
+3. **Be Complete**
+   - All parameters documented
+   - Return values described
+   - Error cases explained
+
+4. **Be Consistent**
+   - Use same terminology across all docs
+   - Follow existing formatting patterns
+   - Maintain consistent structure
+
+5. **Be Up-to-Date**
+   - Update version numbers
+   - Update "Last Updated" dates
+   - Reflect current feature set
+
+---
+
+## 📝 Documentation Update Checklist
+
+Before completing any feature work, verify:
+
+- [ ] `MCP_FEATURES.md` updated
+  - [ ] Feature moved from "Not Implemented" to "Implemented" (if applicable)
+  - [ ] Coverage statistics updated
+  - [ ] Tools/Resources count updated
+  - [ ] Implementation statistics updated
+  - [ ] "Last Updated" date changed
+
+- [ ] `README_MCP.md` updated
+  - [ ] Tool/Resource documented in "Available Tools" or "Resources" section
+  - [ ] Description clear and complete
+  - [ ] All parameters documented with types
+  - [ ] Usage examples provided
+  - [ ] Related sections updated (Features, Prerequisites, etc.)
+  - [ ] Version number updated if needed
+
+- [ ] `QUICKSTART_MCP.md` updated (if core user-facing feature)
+  - [ ] Added to tools list
+  - [ ] Quick example provided if relevant
+  - [ ] Version number updated if needed
+
+- [ ] `README.md` updated (if major feature)
+  - [ ] Feature list updated
+  - [ ] MCP section reflects new capabilities
+
+---
+
+## 🎯 Example: Adding a New Tool
+
+**When adding `download_track` tool:**
+
+### 1. Code Changes
+```python
+# tidal_dl_ng_mcp/tools/download.py
+async def download_track(track_id: str, quality: str = "HiFi") -> str:
+    """Download a track from TIDAL."""
+    ...
+```
+
+### 2. Required Documentation Updates
+
+**MCP_FEATURES.md:**
+```markdown
+#### 4. Download Operations (1/8+) 🟡 IN PROGRESS
+- ✅ **Download Track** - Download individual tracks  <-- ADD
+  - Quality selection (HiFi, Lossless, HiRes)
+  - Format conversion (FLAC, ALAC, AAC, MP3)
+  - Metadata embedding
+
+# Update statistics:
+**Overall MCP Implementation: 13 / 65+ features (~20%)**  <-- UPDATE
+
+**Current Status:**
+- **Total Features in Library:** 65+
+- **Implemented in MCP:** 13  <-- UPDATE from 12
+- **Tools:** 13  <-- UPDATE from 12
+```
+
+**README_MCP.md:**
+```markdown
+## 🛠️ Available Tools
+
+### Download (1 tool)  <-- ADD NEW SECTION
+
+#### `download_track`
+Download a track from TIDAL with specified quality.
+
+**Parameters:**
+- `track_id` (required): TIDAL track ID
+- `quality` (optional): Audio quality (`HiFi`, `Lossless`, `HiRes`, default: `HiFi`)
+- `format` (optional): Output format (`flac`, `alac`, `aac`, default: `flac`)
+
+**Examples:**
+\`\`\`
+download_track: track_id="12345"
+download_track: track_id="67890", quality="HiRes", format="flac"
+\`\`\`
+```
+
+**QUICKSTART_MCP.md:**
+```markdown
+### Downloads (1)  <-- ADD
+- `download_track` - Download tracks
+```
+
+---
+
+## 🚨 Critical Rules
+
+### NEVER:
+1. ❌ Skip documentation updates when adding features
+2. ❌ Leave documentation outdated after changes
+3. ❌ Forget to update statistics and counts
+4. ❌ Add tools without examples
+5. ❌ Change behavior without updating docs
+
+### ALWAYS:
+1. ✅ Update ALL relevant documentation files
+2. ✅ Update statistics and counts
+3. ✅ Provide clear examples
+4. ✅ Update version/date stamps
+5. ✅ Test examples before documenting
+
+---
+
+## 🎨 Code Style Rules (from CLAUDE.md)
+
+When working on the MCP server:
+
+### Python Style
+- Use `snake_case` for variables/functions
+- Use `CamelCase` for classes
+- Follow PEP 8, PEP 484 (type hints)
+- Use modern built-in generics: `list`, `dict`, `set`
+- Prefix private members with underscore
+- Use `ALL_CAPS` for constants
+
+### Documentation
+- Write Google-style docstrings for all functions/classes
+- Include type annotations for all parameters
+- Document exceptions that can be raised
+- Provide usage examples in docstrings
+
+### Error Handling
+- Use try/except blocks with contextual logging
+- Return user-friendly error messages
+- Use `@require_auth` decorator for tools requiring authentication
+
+### Tools Structure
+```python
+@require_auth
+async def tool_name(param: str, optional: bool = False) -> str:
+    """Tool description.
+
+    Args:
+        param: Description of required parameter.
+        optional: Description of optional parameter.
+
+    Returns:
+        Description of return value.
+    """
+    tidal = get_tidal_instance()
+
+    try:
+        # Implementation
+        return "✓ Success message"
+    except Exception as e:
+        return f"✗ Error: {e!s}"
+```
+
+---
+
+## 📋 File Structure Reference
+
+```
+tidal-dl-mcp/
+├── README.md                 # Main repo README (mentions MCP)
+├── README_MCP.md             # Complete MCP setup & usage guide
+├── MCP_FEATURES.md           # Feature coverage & roadmap
+├── QUICKSTART_MCP.md         # 5-minute quick start
+├── CLAUDE.md                 # Development guidelines
+├── tidal_dl_ng_mcp/          # MCP server code
+│   ├── server.py             # Main server (tool registration)
+│   ├── tools/
+│   │   ├── search.py         # Search tool
+│   │   ├── playlist.py       # Playlist tools
+│   │   ├── favorites.py      # Favorites tools
+│   │   └── [new_feature].py  # Add new tool files here
+│   └── utils/
+│       └── auth.py           # Authentication utilities
+└── pyproject.toml            # Project configuration
+```
+
+---
+
+## 🔄 Documentation Update Workflow
+
+### Step 1: Implement Feature
+Write the code for the new tool/feature.
+
+### Step 2: Update MCP_FEATURES.md
+- Move from "Not Implemented" to "Implemented"
+- Update coverage statistics
+- Update counts
+- Update "Last Updated" date
+
+### Step 3: Update README_MCP.md
+- Add to "Available Tools" or "Resources"
+- Document all parameters
+- Provide examples
+- Update feature list if needed
+
+### Step 4: Update QUICKSTART_MCP.md (if relevant)
+- Add to tools list
+- Add quick example if core feature
+
+### Step 5: Update README.md (if major feature)
+- Update MCP Server section
+- Update feature highlights
+
+### Step 6: Verify
+- Read through all updated documentation
+- Verify examples work
+- Check all links
+- Confirm counts and statistics are correct
+
+---
+
+## 📌 Remember
+
+> **"Code without documentation is incomplete."**
+
+Every feature implementation is only complete when:
+1. Code is written and tested
+2. Documentation is updated
+3. Examples are provided
+4. Statistics are current
+
+**Documentation is not optional—it's required!**
+
+---
+
+*This file ensures consistent, up-to-date documentation for the TIDAL-DL-NG MCP Server project.*
